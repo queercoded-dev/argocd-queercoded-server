@@ -25,7 +25,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   creationTimestamp: null
-  name: prod
+  name: prod-helm-apps
   namespace: argocd
 spec:
   generators:
