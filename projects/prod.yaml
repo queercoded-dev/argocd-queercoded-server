@@ -4,21 +4,19 @@ kind: AppProject
 metadata:
   name: prod
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'
   description: Production environment
   destinations:
-  - namespace: '*'
-    server: '*'
+    - namespace: '*'
+      server: '*'
   namespaceResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'
   sourceRepos:
-  - '*'
+    - '*'
 ...
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -28,11 +26,19 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/queercoded-dev/argocd-queercoded-server.git
-      revision: main
-      files:
-      - path: apps/**/envs/values-prod.yaml
+    - git:
+        repoURL: https://github.com/queercoded-dev/argocd-queercoded-server.git
+        revision: ""
+        files:
+          - path: apps/**/envs/values-prod.yaml
+        requeueAfterSeconds: 20
+        template:
+          metadata: {}
+          spec:
+            destination: {}
+            project: ""
+            source:
+              repoURL: ""
   template:
     metadata:
       labels:
@@ -46,11 +52,11 @@ spec:
         server: 'https://kubernetes.default.svc'
       source:
         repoURL: https://github.com/queercoded-dev/argocd-queercoded-server.git
-        targetRevision: main
+        targetRevision: 'main'
         path: '{{ path }}/../chart'
         helm:
           valueFiles:
-            - '{{ path }}/../envs/values-prod.yaml'
+            - '../envs/values-prod.yaml'
       syncPolicy:
         automated:
           prune: true
