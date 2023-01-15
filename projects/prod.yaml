@@ -51,7 +51,7 @@ spec:
         path: '{{ path }}/../chart'
         helm:
           valueFiles:
-            - './values-prod.yaml'
+            - '../envs/values-prod.yaml'
       syncPolicy:
         automated:
           prune: true
