@@ -24,21 +24,20 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  creationTimestamp: null
   name: prod-helm-apps
   namespace: argocd
 spec:
   generators:
   - git:
       repoURL: https://github.com/queercoded-dev/argocd-queercoded-server.git
-      revision: HEAD
+      revision: main
       files:
       - path: apps/**/envs/values-prod.yaml
   template:
     metadata:
       labels:
         app.kubernetes.io/name: '{{ path[1] }}'
-      name: '{{ path[1] }}'
+      name: prod-{{ path[1] }}
       namespace: argocd
     spec:
       project: prod
@@ -47,11 +46,11 @@ spec:
         server: 'https://kubernetes.default.svc'
       source:
         repoURL: https://github.com/queercoded-dev/argocd-queercoded-server.git
-        targetRevision: HEAD
+        targetRevision: main
         path: '{{ path }}/../chart'
         helm:
           valueFiles:
-            - '../envs/values-prod.yaml'
+            - '{{ path }}/../envs/values-prod.yaml'
       syncPolicy:
         automated:
           prune: true
